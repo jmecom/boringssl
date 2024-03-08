@@ -127,10 +127,11 @@ enum spake2_role_t {
 // bound into the protocol. For example MAC addresses, hostnames, usernames
 // etc. These values are not exposed and can avoid context-confusion attacks
 // when a password is shared between several devices.
-OPENSSL_EXPORT SPAKE2_CTX *SPAKE2_CTX_new(
-    enum spake2_role_t my_role,
-    const uint8_t *my_name, size_t my_name_len,
-    const uint8_t *their_name, size_t their_name_len);
+OPENSSL_EXPORT SPAKE2_CTX *SPAKE2_CTX_new(enum spake2_role_t my_role,
+                                          const uint8_t *my_name,
+                                          size_t my_name_len,
+                                          const uint8_t *their_name,
+                                          size_t their_name_len);
 
 // SPAKE2_CTX_free frees |ctx| and all the resources that it has allocated.
 OPENSSL_EXPORT void SPAKE2_CTX_free(SPAKE2_CTX *ctx);
@@ -181,6 +182,19 @@ OPENSSL_EXPORT int SPAKE2_process_msg(SPAKE2_CTX *ctx, uint8_t *out_key,
                                       size_t max_out_key_len,
                                       const uint8_t *their_msg,
                                       size_t their_msg_len);
+
+OPENSSL_EXPORT int SPAKE2_set_private_key(SPAKE2_CTX *ctx,
+                                          const uint8_t *private_key,
+                                          size_t private_key_len);
+
+OPENSSL_EXPORT int SPAKE2_get_private_key(SPAKE2_CTX *ctx, uint8_t *out,
+                                          size_t *out_len, size_t max_out_len);
+
+OPENSSL_EXPORT int SPAKE2_set_msg(SPAKE2_CTX *ctx, const uint8_t *msg,
+                                  size_t msg_len);
+
+OPENSSL_EXPORT int SPAKE2_get_msg(SPAKE2_CTX *ctx, uint8_t *out,
+                                  size_t *out_len, size_t max_out_len);
 
 
 #if defined(__cplusplus)
