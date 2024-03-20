@@ -37,6 +37,11 @@ if(CMAKE_VERSION VERSION_LESS "3.14")
       RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
 
+if(APPLE)
+  message(STATUS "Configuring for macOS; hack for CI")
+  set(BUNDLE_DESTINATION "BUNDLE DESTINATION ${CMAKE_INSTALL_BINDIR}")
+endif()
+
 # Wrap the CMake install function so we can disable it.
 set(INSTALL_ENABLED 1)
 function(install_if_enabled)
@@ -401,6 +406,7 @@ if(USE_CUSTOM_LIBCXX)
   # does not make sense. As this is a test-only configuration, disable
   # installing.
   set(INSTALL_ENABLED 0)
+  message(STATUS "Disabling installation for USE_CUSTOM_LIBCXX")
 
   # CMAKE_CXX_FLAGS ends up in the linker flags as well, so use
   # add_compile_options. There does not appear to be a way to set
@@ -564,11 +570,18 @@ set_target_properties(
 
 add_executable(bssl ${BSSL_SOURCES})
 
-message(STATUS "Install if enabled inputs: ${INSTALL_DESTINATION_DEFAULT}")
-message(STATUS "Targets: ${TARGETS}")
-message(STAUTS "Destination: ${DESTINATION}")
+message(STATUS "Value of INSTALL_DESTINATION_DEFAULT: ${INSTALL_DESTINATION_DEFAULT}")
+message(STATUS "Install if enabled: ${INSTALL_ENABLED}")
+message(STATUS "Bundle dest: ${BUNDLE_DESTINATION}")
+message(STATUS "OSX: ${MACOSX_BUNDLE}")
 
-install_if_enabled(TARGETS bssl DESTINATION ${INSTALL_DESTINATION_DEFAULT})
+# install_if_enabled(TARGETS bssl DESTINATION ${INSTALL_DESTINATION_DEFAULT})
+install_if_enabled(
+  TARGETS bssl
+  DESTINATION ${INSTALL_DESTINATION_DEFAULT}
+  BUNDLE DESTINATION ${BUNDLE_DESTINATION}
+)
+
 target_link_libraries(bssl ssl crypto)
 
 # Historically, targets were built in subdirectories. For compatibility with
