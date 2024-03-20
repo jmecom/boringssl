@@ -563,6 +563,11 @@ set_target_properties(
   COMPILE_FLAGS "${PKI_CXX_FLAGS}")
 
 add_executable(bssl ${BSSL_SOURCES})
+
+message(STATUS "Install if enabled inputs: ${INSTALL_DESTINATION_DEFAULT}")
+message(STATUS "Targets: ${TARGETS}")
+message(STAUTS "Destination: ${DESTINATION}")
+
 install_if_enabled(TARGETS bssl DESTINATION ${INSTALL_DESTINATION_DEFAULT})
 target_link_libraries(bssl ssl crypto)
 
